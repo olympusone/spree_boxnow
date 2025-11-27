@@ -1,0 +1,11 @@
+---
+en:
+  spree:
+    admin:
+      integrations:
+        boxnow:
+          title: BoxNow
+          description: BoxNow is a shipping integration for Greece
+          preferred_client_id: Client ID
+          preferred_client_secret: Client Secret
+          preferred_api_url: API URL

@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.author    = 'OlympusOne'
   s.email     = 'info@olympusone.com'
   s.homepage  = 'https://github.com/olympusone/spree_boxnow'
-  s.license   = 'MIT'
+  s.license   = 'AGPL-3.0-or-later'
 
   s.metadata = {
     "bug_tracker_uri"   => "#{s.homepage}/issues",
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  spree_version = '>= 5.1.0'
+  spree_version = '>= 5.1.8'
   s.add_dependency 'spree', spree_version
   s.add_dependency 'spree_storefront', spree_version
   s.add_dependency 'spree_admin', spree_version

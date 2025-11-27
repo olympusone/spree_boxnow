@@ -1,0 +1,11 @@
+---
+el:
+  spree:
+    admin:
+      integrations:
+        boxnow:
+          title: BoxNow
+          description: Διασύνδεση με τις υπηρεσίες της BoxNow
+          preferred_client_id: Client ID
+          preferred_client_secret: Client Secret
+          preferred_api_url: API URL
