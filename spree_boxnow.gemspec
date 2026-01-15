@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.author    = 'OlympusOne'
   s.email     = 'info@olympusone.com'
   s.homepage  = 'https://github.com/olympusone/spree_boxnow'
-  s.license   = 'AGPL-3.0-or-later'
+  s.license   = 'MIT'
 
   s.metadata = {
     "bug_tracker_uri"   => "#{s.homepage}/issues",
