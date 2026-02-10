@@ -1,5 +1,9 @@
 ---
 el:
+  activerecord:
+    attributes:
+      spree/shipping_method:
+        boxnow: BoxNow
   spree:
     admin:
       integrations:
@@ -10,3 +14,7 @@ el:
           preferred_client_secret: Client Secret
           preferred_partner_id: Partner ID
           preferred_api_url: API URL
+          preferred_small_box_price: Τιμή Μικρού Κουτιού
+          preferred_medium_box_price: Τιμή Μεσαίου Κουτιού
+          preferred_large_box_price: Τιμή Μεγάλου Κουτιού
+    shipping_boxnow_rate: Μέθοδος υπολογισμού BoxNow
