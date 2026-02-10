@@ -7,7 +7,7 @@ require 'spree_boxnow/version'
 Gem::Specification.new do |s|
   s.platform    = Gem::Platform::RUBY
   s.name        = 'spree_boxnow'
-  s.version     = SpreeBoxNow::VERSION
+  s.version     = SpreeBoxnow::VERSION
   s.summary     = 'Spree Commerce BoxNow Extension'
   s.description = 'Adds the ability to manage BoxNow vouchers to Spree stores.'
 
@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.require_path = 'lib'
   s.requirements << 'none'
 
-  spree_version = '>= 5.1.8'
+  spree_version = '>= 5.2.0'
   s.add_dependency 'spree', spree_version
   s.add_dependency 'spree_storefront', spree_version
   s.add_dependency 'spree_admin', spree_version

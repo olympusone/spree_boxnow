@@ -11,6 +11,6 @@ if (typeof window.Stimulus === "undefined") {
   application = window.Stimulus
 }
 
-import EltaCourierController from 'spree_boxnow/controllers/boxnow_controller'
+import SpreeBoxnowController from 'spree_boxnow/controllers/spree_boxnow_controller'
 
-application.register('boxnow', EltaCourierController)
+application.register('spree-boxnow', SpreeBoxnowController)

@@ -8,4 +8,5 @@ el:
           description: Διασύνδεση με τις υπηρεσίες της BoxNow
           preferred_client_id: Client ID
           preferred_client_secret: Client Secret
+          preferred_partner_id: Partner ID
           preferred_api_url: API URL
