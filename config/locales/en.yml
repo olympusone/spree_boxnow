@@ -10,11 +10,22 @@ en:
         boxnow:
           title: BoxNow
           description: BoxNow is a shipping integration for Greece
-          preferred_client_id: Client ID
-          preferred_client_secret: Client Secret
-          preferred_partner_id: Partner ID
-          preferred_api_url: API URL
-          preferred_small_box_price: Small Box Price
-          preferred_medium_box_price: Medium Box Price
-          preferred_large_box_price: Large Box Price
+          client_id: Client ID
+          client_secret: Client Secret
+          partner_id: Partner ID
+          api_url: API URL
+          small_box_price: Small Box Price
+          medium_box_price: Medium Box Price
+          large_box_price: Large Box Price
+          create_voucher: Create Voucher (BoxNow)
+          print_voucher: Print Voucher (BoxNow)
+          voucher_successfully_created: Voucher successfully created
+          voucher_creation_failed: Voucher creation failed
+          voucher_print_failed: Voucher printing failed
     shipping_boxnow_rate: BoxNow Calculation Method
+    base_padding_cm: Additional packaging margin (cm)
+    multi_item_factor: Surcharge factor for multiple items
+    small_box_price: Shipping cost – Small box
+    medium_box_price: Shipping cost – Medium box
+    large_box_price: Shipping cost – Large box
+

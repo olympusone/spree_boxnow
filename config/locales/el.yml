@@ -10,11 +10,22 @@ el:
         boxnow:
           title: BoxNow
           description: Διασύνδεση με τις υπηρεσίες της BoxNow
-          preferred_client_id: Client ID
-          preferred_client_secret: Client Secret
-          preferred_partner_id: Partner ID
-          preferred_api_url: API URL
-          preferred_small_box_price: Τιμή Μικρού Κουτιού
-          preferred_medium_box_price: Τιμή Μεσαίου Κουτιού
-          preferred_large_box_price: Τιμή Μεγάλου Κουτιού
+          client_id: Client ID
+          client_secret: Client Secret
+          partner_id: Partner ID
+          api_url: API URL
+          small_box_price: Τιμή Μικρού Κουτιού
+          medium_box_price: Τιμή Μεσαίου Κουτιού
+          large_box_price: Τιμή Μεγάλου Κουτιού
+          create_voucher: Δημιουργία Voucher (BoxNow)
+          print_voucher: Εκτύπωση Voucher (BoxNow)
+          voucher_successfully_created: Voucher δημιουργήθηκε επιτυχώς
+          voucher_creation_failed: Αποτυχία δημιουργίας Voucher
+          voucher_print_failed: Αποτυχία εκτύπωσης Voucher
     shipping_boxnow_rate: Μέθοδος υπολογισμού BoxNow
+    base_padding_cm: Επιπλέον περιθώριο συσκευασίας (cm)
+    multi_item_factor: Συντελεστής προσαύξησης για πολλαπλά προϊόντα
+    small_box_price: Κόστος αποστολής – Μικρό κουτί
+    medium_box_price: Κόστος αποστολής – Μεσαίο κουτί
+    large_box_price: Κόστος αποστολής – Μεγάλο κουτί
+

@@ -39,5 +39,4 @@ Gem::Specification.new do |s|
   s.add_dependency 'savon', '~> 2.15'
 
   s.add_development_dependency 'spree_dev_tools'
-  s.add_development_dependency 'dotenv'
 end
