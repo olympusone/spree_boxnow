@@ -1,0 +1,24 @@
+<% if store_integration('boxnow').present? %>
+  <% if @order.can_create_boxnow_voucher? %>
+    <button
+      type="button"
+      class='btn text-left dropdown-item'
+      data-controller='boxnow'
+      data-action='boxnow#createVoucher'
+      data-boxnow-order-id-value='<%= @order.id %>'
+      data-boxnow-create-voucher-prompt-value="<%= Spree.t('admin.integrations.boxnow.create_voucher_prompt') %>"
+      data-boxnow-create-voucher-error-value="<%= Spree.t('admin.integrations.boxnow.create_voucher_error') %>">
+      <%= icon 'package' %>
+      <%= Spree.t('admin.integrations.boxnow.create_voucher') %>
+    </button>
+  <% end %>
+
+  <% if @order.can_print_boxnow_voucher? %>
+    <%= link_to_with_icon 'printer',
+      Spree.t('admin.integrations.boxnow.print_voucher'),
+      spree.admin_boxnow_print_path(@order.id),
+      class: 'btn text-left dropdown-item',
+      target: '_blank'
+    %>
+  <% end %>
+<% end %>

@@ -14,14 +14,24 @@ en:
           client_secret: Client Secret
           partner_id: Partner ID
           api_url: API URL
+          contact_name: Origin Contact Name
+          contact_phone: Origin Contact Phone (required, e.g. +30 210 1234567)
+          contact_email: Origin Contact Email (required)
           small_box_price: Small Box Price
           medium_box_price: Medium Box Price
           large_box_price: Large Box Price
           create_voucher: Create Voucher (BoxNow)
+          create_voucher_prompt: Are you sure you want to create a BoxNow voucher for this order?
+          create_voucher_error: Failed to create BoxNow voucher. Please try again.
           print_voucher: Print Voucher (BoxNow)
           voucher_successfully_created: Voucher successfully created
           voucher_creation_failed: Voucher creation failed
           voucher_print_failed: Voucher printing failed
+    boxnow:
+      select_locker: Select BoxNow Locker
+      change_locker: Change Locker
+      locker_selected: Selected locker
+      no_locker_selected: No locker selected yet
     shipping_boxnow_rate: BoxNow Calculation Method
     base_padding_cm: Additional packaging margin (cm)
     multi_item_factor: Surcharge factor for multiple items

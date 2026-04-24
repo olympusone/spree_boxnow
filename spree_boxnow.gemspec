@@ -36,7 +36,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'spree_admin', spree_version
   s.add_dependency 'spree_extension'
 
-  s.add_dependency 'savon', '~> 2.15'
+  s.add_dependency 'combine_pdf', '~> 1.0'
+  s.add_dependency 'faraday', '~> 2.0'
+  s.add_dependency 'faraday-retry', '~> 2.0'
 
   s.add_development_dependency 'spree_dev_tools'
 end

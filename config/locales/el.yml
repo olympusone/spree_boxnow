@@ -14,14 +14,24 @@ el:
           client_secret: Client Secret
           partner_id: Partner ID
           api_url: API URL
+          contact_name: Όνομα Επαφής Αποστολέα
+          contact_phone: Τηλέφωνο Επαφής Αποστολέα
+          contact_email: Email Επαφής Αποστολέα
           small_box_price: Τιμή Μικρού Κουτιού
           medium_box_price: Τιμή Μεσαίου Κουτιού
           large_box_price: Τιμή Μεγάλου Κουτιού
           create_voucher: Δημιουργία Voucher (BoxNow)
+          create_voucher_prompt: Είστε σίγουροι ότι θέλετε να δημιουργήσετε voucher BoxNow για αυτή την παραγγελία;
+          create_voucher_error: Αποτυχία δημιουργίας voucher BoxNow. Παρακαλώ δοκιμάστε ξανά.
           print_voucher: Εκτύπωση Voucher (BoxNow)
           voucher_successfully_created: Voucher δημιουργήθηκε επιτυχώς
           voucher_creation_failed: Αποτυχία δημιουργίας Voucher
           voucher_print_failed: Αποτυχία εκτύπωσης Voucher
+    boxnow:
+      select_locker: Επιλογή θυρίδας BoxNow
+      change_locker: Αλλαγή θυρίδας
+      locker_selected: Επιλεγμένη θυρίδα
+      no_locker_selected: Δεν έχει επιλεγεί θυρίδα
     shipping_boxnow_rate: Μέθοδος υπολογισμού BoxNow
     base_padding_cm: Επιπλέον περιθώριο συσκευασίας (cm)
     multi_item_factor: Συντελεστής προσαύξησης για πολλαπλά προϊόντα

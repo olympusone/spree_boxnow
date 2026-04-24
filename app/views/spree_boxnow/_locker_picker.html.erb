@@ -1,0 +1,101 @@
+<%
+  saved_locker_id      = shipment.private_metadata['boxnow.destination_location_id']
+  saved_locker_name    = shipment.private_metadata['boxnow.locker_name']
+  saved_locker_address = shipment.private_metadata['boxnow.locker_address']
+%>
+<div class="px-5 pb-5 pt-2 border-t border-default boxnow-locker-picker" id="boxnow-locker-picker-<%= rate.id %>" style="<%= selected ? '' : 'display:none' %>">
+  <div id="boxnow-map-container" style="height:600px; width:100%"></div>
+
+  <% if saved_locker_id.present? %>
+    <div id="boxnow-selected-locker" class="mb-3 p-3 bg-green-50 rounded-md border border-green-200">
+      <p class="text-sm font-medium text-green-800">
+        <%= Spree.t('boxnow.locker_selected') %>:
+        <span id="boxnow-locker-name" class="font-bold"><%= saved_locker_name %></span>
+      </p>
+      <p class="text-xs text-green-700" id="boxnow-locker-address"><%= saved_locker_address %></p>
+    </div>
+  <% else %>
+    <div id="boxnow-selected-locker" class="hidden mb-3 p-3 bg-green-50 rounded-md border border-green-200">
+      <p class="text-sm font-medium text-green-800">
+        <%= Spree.t('boxnow.locker_selected') %>:
+        <span id="boxnow-locker-name" class="font-bold"></span>
+      </p>
+      <p class="text-xs text-green-700" id="boxnow-locker-address"></p>
+    </div>
+  <% end %>
+
+  <a href="javascript:;" class="boxnow-map-widget-button" style="display:none"></a>
+
+  <script>
+    window._bn_map_widget_config = {
+      partnerId: <%= raw integration.preferred_partner_id.to_json %>,
+      parentElement: "#boxnow-map-container",
+      type: "iframe",
+      afterSelect: function(selected) {
+        var lockerId      = selected.boxnowLockerId;
+        var lockerName    = selected.boxnowLockerName || selected.boxnowLockerAddressLine1;
+        var lockerAddress = [selected.boxnowLockerAddressLine1, selected.boxnowLockerPostalCode].filter(Boolean).join(', ');
+        var csrfMeta      = document.querySelector('meta[name="csrf-token"]');
+
+        fetch("<%= spree.boxnow_select_locker_path %>", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-Token": csrfMeta ? csrfMeta.content : ''
+          },
+          body: JSON.stringify({ locker_id: lockerId, locker_name: lockerName, locker_address: lockerAddress })
+        });
+
+        document.getElementById("boxnow-locker-name").textContent    = lockerName;
+        document.getElementById("boxnow-locker-address").textContent = lockerAddress;
+        document.getElementById("boxnow-selected-locker").classList.remove("hidden");
+      }
+    };
+
+    (function(d) {
+      var pickerId = 'boxnow-locker-picker-<%= rate.id %>';
+      var radioId  = 'shipping-rate-<%= rate.id %>';
+
+      function openWidget() {
+        var btn = d.querySelector('.boxnow-map-widget-button');
+        if (btn) btn.click();
+      }
+
+      function loadWidget(callback) {
+        if (d.getElementById('boxnow-widget-script')) {
+          callback();
+        } else {
+          var e = d.createElement("script");
+          e.id    = "boxnow-widget-script";
+          e.src   = "https://widget-cdn.boxnow.gr/map-widget/client/v5.js";
+          e.async = true;
+          e.defer = true;
+          e.onload = callback;
+          d.getElementsByTagName("head")[0].appendChild(e);
+        }
+      }
+
+      function showPickerAndOpen() {
+        var picker = d.getElementById(pickerId);
+        if (picker) picker.style.display = '';
+        d.querySelectorAll('.boxnow-locker-picker').forEach(function(el) {
+          if (el.id !== pickerId) el.style.display = 'none';
+        });
+        loadWidget(function() { setTimeout(openWidget, 50); });
+      }
+
+      var radio = d.getElementById(radioId);
+      if (radio) {
+        radio.addEventListener('change', function() {
+          if (radio.checked) showPickerAndOpen();
+        });
+      }
+
+      // Auto-open if already selected on page load
+      var picker = d.getElementById(pickerId);
+      if (picker && picker.style.display !== 'none') {
+        loadWidget(function() { setTimeout(openWidget, 50); });
+      }
+    })(document);
+  </script>
+</div>
