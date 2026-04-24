@@ -25,7 +25,7 @@ module Spree
         rescue StandardError => e
           Rails.logger.error "Boxnow Error: #{e.message}"
 
-          flash[:error] = Spree.t('admin.integrations.boxnow.voucher_creation_failed')
+          flash[:error] = "#{Spree.t('admin.integrations.boxnow.voucher_creation_failed')}: #{e.message}"
         end
       end
 
@@ -72,6 +72,24 @@ module Spree
             error: Spree.t('admin.integrations.boxnow.voucher_print_failed')
           }, status: 400
         end
+      end
+
+      def select_locker
+        load_order
+        shipment = @order.shipments.find { |s| s.shipping_method&.boxnow? }
+
+        if shipment.nil? || params[:locker_id].blank?
+          render json: { error: 'Invalid request' }, status: :unprocessable_entity and return
+        end
+
+        shipment.private_metadata['boxnow.destination_location_id'] = params[:locker_id]
+        shipment.private_metadata['boxnow.locker_name']             = params[:locker_name]
+        shipment.private_metadata['boxnow.locker_address']          = params[:locker_address]
+        shipment.save!
+
+        render json: { success: true }
+      rescue ActiveRecord::RecordNotFound
+        order_not_found
       end
 
       private

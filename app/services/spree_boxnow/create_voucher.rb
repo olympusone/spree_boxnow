@@ -25,7 +25,7 @@ module SpreeBoxnow
         paymentMode:         cod ? 'cod' : 'prepaid',
         amountToBeCollected: cod ? shipment.final_price_with_items.to_f.to_s : '0.00',
         origin: {
-          locationId:    integration.preferred_partner_id,
+          locationId:    integration.preferred_origin_location_id,
           contactName:   integration.preferred_contact_name.presence || '',
           contactNumber: integration.preferred_contact_phone.presence || '',
           contactEmail:  integration.preferred_contact_email.presence || ''
@@ -45,7 +45,7 @@ module SpreeBoxnow
         }]
       }
 
-      result = Boxnow::ApiClient.new.create_delivery_request(params)
+      result = SpreeBoxnow::ApiClient.new.create_delivery_request(params)
 
       parcels = result['parcels'] || []
       raise VoucherError, 'BoxNow returned no parcels' if parcels.empty?
@@ -54,7 +54,7 @@ module SpreeBoxnow
         parcel_id:        parcels[0]['id'],
         child_parcel_ids: parcels[1..].map { |p| p['id'] }
       }
-    rescue Boxnow::ApiClient::ApiError => e
+    rescue SpreeBoxnow::ApiClient::ApiError => e
       raise VoucherError, e.message
     end
 

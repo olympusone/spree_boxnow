@@ -1,7 +1,7 @@
 require 'faraday'
 require 'faraday/retry'
 
-module Boxnow
+module SpreeBoxnow
   class ApiClient
     include Spree::IntegrationsConcern
 
@@ -94,7 +94,11 @@ module Boxnow
     end
 
     def handle_response(response, raw: false)
-      raise ApiError, "BoxNow API error (#{response.status}): #{response.body}" unless response.success?
+      unless response.success?
+        code = response.body.is_a?(Hash) ? response.body['code'] : nil
+        message = code ? I18n.t("spree.boxnow.api_errors.#{code}", default: response.body.to_s) : response.body.to_s
+        raise ApiError, "[#{code || response.status}] #{message}"
+      end
 
       raw ? response.body : response.body
     end

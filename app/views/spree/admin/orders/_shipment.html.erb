@@ -1,0 +1,198 @@
+<% order ||= shipment.order %>
+<%= turbo_frame_tag dom_id(shipment), class: "card rounded-lg" do %>
+  <div class="card-header items-center justify-between">
+    <div class="flex items-center gap-2">
+      <span class="flex items-center"><%= shipment_state(shipment.state) %></span>
+      <strong class="shipment-number"><%= shipment.number %></strong>
+      <% if shipment.shipped_at.present? %>
+        <small class="text-gray-600">
+          <%= spree_time_ago(shipment.shipped_at) %>
+        </small>
+      <% end %>
+    </div>
+
+    <span class="flex justify-between items-center gap-2">
+      <span class="text-gray-600"><%= Spree.t(:package_from).downcase %></span>
+      <span class="font-semibold">
+        <% if can?(:edit, shipment.stock_location) %>
+          <%= link_to shipment.stock_location.name, spree.edit_admin_stock_location_path(shipment.stock_location), data: { turbo_frame: '_top' } %>
+        <% else %>
+          <%= shipment.stock_location.name %>
+        <% end %>
+      </strong>
+    </span>
+  </div>
+  <div class="card-body mb-0 p-0">
+    <div class="shipment-line-items">
+      <div class="text-gray-600 text-center border-b py-2 px-4 text-sm shipment-line-items__row">
+        <span class="text-left">
+          <%= Spree.t(:item_description) %>
+        </span>
+        <span>
+          <%= Spree.t(:price) %>
+        </span>
+        <span>
+          <%= Spree.t(:quantity) %>
+        </span>
+        <span>
+          <%= Spree.t(:total) %>
+        </span>
+        <span>
+        </span>
+      </div>
+      <%= render collection: shipment.manifest, partial: 'spree/admin/orders/shipment_manifest_item', as: :item, locals: { shipment: shipment } %>
+    </div>
+    <%= turbo_frame_tag dom_id(shipment, :shipping_method), class: "py-2 px-4 flex justify-between items-center min-h-14" do %>
+      <div>
+        <% if rate = shipment.selected_shipping_rate %>
+          <strong><%= rate.name %></strong>
+          <span>
+            <%= shipment.display_cost %>
+          </span>
+        <% else %>
+          <%= Spree.t(:no_shipping_method_selected) %>
+        <% end %>
+      </div>
+
+      <% if( (can? :update, shipment) and !shipment.shipped? && !order.canceled? && !shipment.canceled?) %>
+        <%= link_to_with_icon 'edit', Spree.t(:edit), spree.edit_admin_order_shipment_path(order, shipment), class: 'btn btn-sm btn-light', no_text: true %>
+      <% end %>
+    <% end %>
+
+    <% unless shipment.digital? %>
+      <%= turbo_frame_tag dom_id(shipment, :tracking), class: "border-t px-4 flex justify-between items-center min-h-14" do %>
+        <div class="py-4">
+          <strong><%= Spree.t(:tracking) %>: </strong>
+          <% if shipment.tracked? %>
+            <% if shipment.tracking_url.present? %>
+              <span><%= shipment_tracking_link_to(shipment: shipment, html_options: { target: '_blank', rel: 'noopener noreferrer' }) %></span>
+            <% elsif shipment.tracking.present? %>
+              <span><%= shipment.tracking %></span>
+            <% end %>
+          <% else %>
+            <span class="text-gray-600"><%= Spree.t(:no_tracking_present) %></span>
+          <% end %>
+        </div>
+
+        <% if can?(:update, shipment) && (!order.canceled? && !shipment.canceled?) %>
+          <% if shipment.tracking.present? %>
+            <%= link_to_with_icon 'edit', Spree.t(:edit), spree.edit_admin_order_shipment_path(order, shipment), class: 'btn btn-light btn-sm', no_text: true, title: Spree.t(:edit) %>
+          <% else %>            <%= link_to_with_icon 'plus', Spree.t(:add_one), spree.edit_admin_order_shipment_path(order, shipment), class: 'btn btn-light btn-sm', no_text: true, title: Spree.t(:add_one) %>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if shipment.shipping_method&.boxnow? %>
+      <%
+        integration    = Spree::Store.current&.integrations&.active&.find { |i| i.type == 'Spree::Integrations::Boxnow' }
+        locker_name    = shipment.private_metadata['boxnow.locker_name']
+        locker_address = shipment.private_metadata['boxnow.locker_address']
+        can_edit_locker = integration.present? && (can? :update, shipment) && !order.canceled? && !shipment.canceled? && !shipment.shipped?
+        picker_id      = "admin-boxnow-picker-#{shipment.id}"
+      %>
+      <div class="border-t px-4 py-3" id="admin-boxnow-row-<%= shipment.id %>">
+        <div class="flex items-center justify-between">
+          <div>
+            <strong>BoxNow locker: </strong>
+            <span id="admin-boxnow-locker-name-<%= shipment.id %>"><%= locker_name %></span>
+            <% unless locker_name.present? %>
+              <span class="text-gray-500" id="admin-boxnow-locker-placeholder-<%= shipment.id %>"><%= Spree.t('boxnow.no_locker_selected') %></span>
+            <% end %>
+            <span class="text-gray-500 text-sm ml-1" id="admin-boxnow-locker-address-<%= shipment.id %>"><%= locker_address %></span>
+          </div>
+          <% if can_edit_locker %>
+            <button type="button" class="btn btn-sm btn-light"
+                    onclick="window['adminBoxnowOpen_<%= shipment.id %>']()">
+              <%= locker_name.present? ? Spree.t('boxnow.change_locker') : Spree.t('boxnow.select_locker') %>
+            </button>
+          <% end %>
+        </div>
+
+        <% if can_edit_locker %>
+          <div id="<%= picker_id %>" class="hidden mt-3">
+            <div id="admin-boxnow-map-<%= shipment.id %>" style="height:600px; width:100%"></div>
+            <a href="javascript:;" class="boxnow-map-widget-button" style="display:none"></a>
+          </div>
+          <script>
+            (function() {
+              var shId      = '<%= shipment.id %>';
+              var pickerId  = '<%= picker_id %>';
+              var partnerId = <%= raw integration.preferred_partner_id.to_json %>;
+              var endpoint  = '<%= spree.admin_boxnow_select_locker_path(order.id) %>';
+
+              function csrfToken() {
+                var m = document.querySelector('meta[name="csrf-token"]');
+                return m ? m.content : '';
+              }
+
+              function openWidget() {
+                window._bn_map_widget_config = {
+                  partnerId:     partnerId,
+                  parentElement: '#admin-boxnow-map-' + shId,
+                  type:          'iframe',
+                  afterSelect:   function(selected) {
+                    var lockerId      = selected.boxnowLockerId;
+                    var lockerName    = selected.boxnowLockerName || selected.boxnowLockerAddressLine1;
+                    var lockerAddress = [selected.boxnowLockerAddressLine1, selected.boxnowLockerPostalCode].filter(Boolean).join(', ');
+
+                    fetch(endpoint, {
+                      method:  'POST',
+                      headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken() },
+                      body:    JSON.stringify({ locker_id: lockerId, locker_name: lockerName, locker_address: lockerAddress })
+                    });
+
+                    document.getElementById('admin-boxnow-locker-name-' + shId).textContent    = lockerName;
+                    document.getElementById('admin-boxnow-locker-address-' + shId).textContent = lockerAddress;
+                    var placeholder = document.getElementById('admin-boxnow-locker-placeholder-' + shId);
+                    if (placeholder) placeholder.style.display = 'none';
+                    document.getElementById(pickerId).classList.add('hidden');
+                  }
+                };
+
+                if (document.getElementById('boxnow-widget-script')) {
+                  var btn = document.querySelector('.boxnow-map-widget-button');
+                  if (btn) setTimeout(function() { btn.click(); }, 50);
+                } else {
+                  var s   = document.createElement('script');
+                  s.id    = 'boxnow-widget-script';
+                  s.src   = 'https://widget-cdn.boxnow.gr/map-widget/client/v5.js';
+                  s.async = true;
+                  s.onload = function() {
+                    var btn = document.querySelector('.boxnow-map-widget-button');
+                    if (btn) setTimeout(function() { btn.click(); }, 50);
+                  };
+                  document.head.appendChild(s);
+                }
+              }
+
+              window['adminBoxnowOpen_' + shId] = function() {
+                var picker = document.getElementById(pickerId);
+                picker.classList.toggle('hidden');
+                if (!picker.classList.contains('hidden')) openWidget();
+              };
+            })();
+          </script>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if can_ship?(shipment) %>
+      <div class="card-footer flex justify-end border-t bg-gray-25">
+        <% if shipment.tracked? %>
+          <%= link_to_with_icon 'send.svg', Spree.t(:ship), spree.ship_admin_order_shipment_path(order, shipment), class: 'ml-auto btn btn-primary mb-0', data: {turbo_method: :post, turbo_confirm: Spree.t(:are_you_sure)} %>
+        <% elsif !shipment.digital? %>
+          <span class="ship ml-auto btn btn-primary disabled mb-0" data-controller="tooltip" data-tooltip-placement-value="left">
+            <%= icon 'send' %>
+            <%= Spree.t(:ship) %>
+            <%= tooltip(Spree.t('admin.shipment.please_provide_tracking_details')) %>
+          </span>
+        <% else %>
+          <span class="text-gray-600 w-full">
+            <%= Spree.t('admin.digital_shipment_fulfillment_note') %>
+          </span>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
