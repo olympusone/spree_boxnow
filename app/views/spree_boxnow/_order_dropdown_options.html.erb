@@ -13,6 +13,20 @@
     </button>
   <% end %>
 
+  <% if @order.can_cancel_boxnow_voucher? %>
+    <button
+      type="button"
+      class='btn text-left dropdown-item'
+      data-controller='spree-boxnow'
+      data-action='spree-boxnow#cancelVoucher'
+      data-spree-boxnow-order-id-value='<%= @order.id %>'
+      data-spree-boxnow-cancel-voucher-prompt-value="<%= Spree.t('admin.integrations.boxnow.cancel_voucher_prompt') %>"
+      data-spree-boxnow-cancel-voucher-error-value="<%= Spree.t('admin.integrations.boxnow.cancel_voucher_error') %>">
+      <%= icon 'x' %>
+      <%= Spree.t('admin.integrations.boxnow.cancel_voucher') %>
+    </button>
+  <% end %>
+
   <% if @order.can_print_boxnow_voucher? %>
     <%= link_to_with_icon 'printer',
       Spree.t('admin.integrations.boxnow.print_voucher'),

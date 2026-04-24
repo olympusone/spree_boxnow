@@ -14,7 +14,6 @@ module SpreeBoxnow
 
       shipment.tracking = nil
       shipment.private_metadata.delete('boxnow.vg_child')
-      shipment.private_metadata.delete('boxnow.destination_location_id')
       shipment.save!
     rescue SpreeBoxnow::ApiClient::ApiError => e
       raise VoucherError, e.message

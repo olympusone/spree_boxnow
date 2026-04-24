@@ -19,8 +19,12 @@ module SpreeBoxnow
       address = shipment.address || order.ship_address
       cod     = order.payment_method&.cod_payment?
 
+      attempt = (shipment.private_metadata['boxnow.voucher_attempt'].to_i + 1)
+      shipment.private_metadata['boxnow.voucher_attempt'] = attempt
+      order_number = attempt == 1 ? shipment.number : "#{shipment.number}-#{attempt}"
+
       params = {
-        orderNumber:         shipment.number,
+        orderNumber:         order_number,
         invoiceValue:        order.total.to_s,
         paymentMode:         cod ? 'cod' : 'prepaid',
         amountToBeCollected: cod ? shipment.final_price_with_items.to_f.to_s : '0.00',

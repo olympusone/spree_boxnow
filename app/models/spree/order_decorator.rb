@@ -7,6 +7,10 @@ module Spree
     def can_print_boxnow_voucher?
       shipments.any?(&:can_print_boxnow_voucher?)
     end
+
+    def can_cancel_boxnow_voucher?
+      shipments.any?(&:can_cancel_boxnow_voucher?)
+    end
   end
 end
 

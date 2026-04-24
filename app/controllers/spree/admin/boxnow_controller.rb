@@ -74,6 +74,24 @@ module Spree
         end
       end
 
+      def cancel
+        load_order
+
+        @order.shipments.each do |shipment|
+          next unless shipment.can_cancel_boxnow_voucher?
+
+          SpreeBoxnow::CancelVoucher.new(shipment).call
+        end
+
+        flash[:success] = Spree.t('admin.integrations.boxnow.voucher_successfully_cancelled')
+      rescue ActiveRecord::RecordNotFound
+        order_not_found
+      rescue StandardError => e
+        Rails.logger.error "Boxnow Error: #{e.message}"
+
+        flash[:error] = "#{Spree.t('admin.integrations.boxnow.voucher_cancellation_failed')}: #{e.message}"
+      end
+
       def select_locker
         load_order
         shipment = @order.shipments.find { |s| s.shipping_method&.boxnow? }

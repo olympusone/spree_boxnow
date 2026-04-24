@@ -25,9 +25,14 @@ en:
           create_voucher_prompt: Are you sure you want to create a BoxNow voucher for this order?
           create_voucher_error: Failed to create BoxNow voucher. Please try again.
           print_voucher: Print Voucher (BoxNow)
+          cancel_voucher: Cancel Voucher (BoxNow)
+          cancel_voucher_prompt: Are you sure you want to cancel the BoxNow voucher for this order? This cannot be undone.
+          cancel_voucher_error: Failed to cancel BoxNow voucher. Please try again.
           voucher_successfully_created: Voucher successfully created
           voucher_creation_failed: Voucher creation failed
           voucher_print_failed: Voucher printing failed
+          voucher_successfully_cancelled: Voucher successfully cancelled
+          voucher_cancellation_failed: Voucher cancellation failed
     boxnow:
       select_locker: Select BoxNow Locker
       change_locker: Change Locker
@@ -42,6 +47,24 @@ en:
         P405: Invalid phone number — must be in international format, e.g. +30 210 1234567
         P406: Invalid parcel size — must be 1 (small), 2 (medium) or 3 (large)
         P407: Invalid country code — must be ISO 3166-1 alpha-2, e.g. GR
+        P408: Invalid amountToBeCollected — must be between 0 and 5000
+        P409: Invalid delivery partner reference
+        P410: Order number already used — a new unique number will be used on retry
+        P411: Cash-on-delivery not enabled for this account — contact BoxNow support
+        P412: Customer return deliveries not allowed for this account
+        P413: Invalid return location reference
+        P414: Unauthorized parcel access
+        P415: Home address delivery not allowed for this account
+        P416: COD payment not allowed for home address delivery
+        P420: Parcel not ready for cancellation — only new/undelivered parcels can be cancelled
+        P421: Invalid parcel weight — must be between 0 and 10^6
+        P422: Address not found — try with postal code and country only
+        P423: No nearby locker found
+        P424: Invalid region format — use language-country code, e.g. el-GR
+        P430: Parcel not ready for AnyAPM confirmation
+        P440: Ambiguous partner — send X-PartnerID header
+        P441: Invalid X-PartnerID header
+        P442: Query limit exceeded — max 100 results per request
     shipping_boxnow_rate: BoxNow Calculation Method
     base_padding_cm: Additional packaging margin (cm)
     multi_item_factor: Surcharge factor for multiple items

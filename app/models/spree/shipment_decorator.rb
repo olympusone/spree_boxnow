@@ -7,6 +7,10 @@ module Spree
     def can_print_boxnow_voucher?
       tracked? && shipping_method.boxnow?
     end
+
+    def can_cancel_boxnow_voucher?
+      tracked? && shipping_method&.boxnow? && !shipped?
+    end
   end
 end
 

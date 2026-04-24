@@ -10,6 +10,7 @@ module Spree
 
       order.shipments.each do |shipment|
         next unless shipment.shipping_method&.boxnow?
+        next if shipment.tracked?
 
         shipment.private_metadata['boxnow.destination_location_id'] = params[:locker_id]
         shipment.private_metadata['boxnow.locker_name']             = params[:locker_name]
