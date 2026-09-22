@@ -45,7 +45,7 @@ module SpreeBoxnow
           name:            'voucher',
           value:           '0.00',
           compartmentSize: parcel_size,
-          weight:          shipment.item_weight.to_f.round
+          weight:          shipment_weight.round
         }]
       }
 
@@ -63,6 +63,13 @@ module SpreeBoxnow
     end
 
     private
+
+    # Reads weight from the manifest's variant rather than Shipment#item_weight,
+    # which relies on inventory_unit.line_item and blows up when a line item was
+    # swapped out from under an already-fulfilled shipment (orphaned line_item_id).
+    def shipment_weight
+      shipment.manifest.sum { |item| item.variant.weight.to_f * item.quantity }
+    end
 
     # Returns BoxNow compartment size: 1=small, 2=medium, 3=large
     # Mirrors the height thresholds in BoxnowRate calculator
