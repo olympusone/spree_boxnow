@@ -34,16 +34,16 @@ A [Spree Commerce](https://spreecommerce.org) extension that integrates **BoxNow
 
 Go to **Admin → Integrations → BoxNow** and fill in:
 
-| Field | Description |
-|-------|-------------|
-| **Client ID** | Provided by BoxNow |
-| **Client Secret** | Provided by BoxNow |
-| **Partner ID** | Provided by BoxNow |
-| **API URL** | BoxNow API base URL (e.g. `https://api-production.boxnow.gr`) |
-| **Origin Location ID** | Your warehouse/store APM location ID |
-| **Contact Name** | Sender contact name printed on labels |
-| **Contact Phone** | Sender phone number |
-| **Contact Email** | Sender email address |
+| Field                  | Description                                                   |
+| ---------------------- | ------------------------------------------------------------- |
+| **Client ID**          | Provided by BoxNow                                            |
+| **Client Secret**      | Provided by BoxNow                                            |
+| **Partner ID**         | Provided by BoxNow                                            |
+| **API URL**            | BoxNow API base URL (e.g. `https://api-production.boxnow.gr`) |
+| **Origin Location ID** | Your warehouse/store APM location ID                          |
+| **Contact Name**       | Sender contact name printed on labels                         |
+| **Contact Phone**      | Sender phone number                                           |
+| **Contact Email**      | Sender email address                                          |
 
 OAuth2 tokens are obtained automatically using Client Credentials and cached in `Rails.cache` for 1 hour.
 
@@ -56,12 +56,12 @@ The shipping calculator determines the price tier from the physical dimensions o
 
 BoxNow hard limits:
 
-| Dimension | Limit |
-|-----------|-------|
+| Dimension  | Limit |
+| ---------- | ----- |
 | Max weight | 20 kg |
 | Max height | 36 cm |
-| Max width | 45 cm |
-| Max depth | 60 cm |
+| Max width  | 45 cm |
+| Max depth  | 60 cm |
 
 ### 3. Create a BoxNow shipping method
 
@@ -72,13 +72,13 @@ Go to **Admin → Shipping Methods → New**:
 3. Select **BoxNow Rate** as the calculator
 4. Set the calculator preferences:
 
-| Preference | Default | Description |
-|------------|---------|-------------|
-| **Small box price** | 0.0 | Price for parcels ≤ 8 cm in height |
-| **Medium box price** | 0.0 | Price for parcels ≤ 17 cm in height |
-| **Large box price** | 0.0 | Price for parcels ≤ 36 cm in height |
-| **Base padding (cm)** | 1.0 | Added to every dimension to account for the physical box being slightly larger than its contents. Set to `0` to disable. |
-| **Multi-item factor** | 1.05 | Multiplier applied to all dimensions when an order has more than one item (accounts for imperfect stacking). Set to `1.0` to disable. |
+| Preference            | Default | Description                                                                                                                           |
+| --------------------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Small box price**   | 0.0     | Price for parcels ≤ 8 cm in height                                                                                                    |
+| **Medium box price**  | 0.0     | Price for parcels ≤ 17 cm in height                                                                                                   |
+| **Large box price**   | 0.0     | Price for parcels ≤ 36 cm in height                                                                                                   |
+| **Base padding (cm)** | 1.0     | Added to every dimension to account for the physical box being slightly larger than its contents. Set to `0` to disable.              |
+| **Multi-item factor** | 1.05    | Multiplier applied to all dimensions when an order has more than one item (accounts for imperfect stacking). Set to `1.0` to disable. |
 
 ---
 
@@ -87,17 +87,18 @@ Go to **Admin → Shipping Methods → New**:
 The calculator models the entire order as **one parcel** — there is no multi-box splitting.
 
 For each line item it:
+
 1. Sorts the variant's three dimensions smallest → largest (`s ≤ m ≤ d`)
 2. Stacks items along the smallest axis: `parcel_height += s × quantity`
 3. Takes `width = max(m)` and `depth = max(d)` across all items
 
 After stacking, padding and the multi-item factor are applied. The resulting three dimensions are then sorted again to allow virtual rotation, and the smallest is compared against the tier thresholds.
 
-| Tier | Height threshold |
-|------|-----------------|
-| Small | ≤ 8 cm |
-| Medium | ≤ 17 cm |
-| Large | ≤ 36 cm |
+| Tier   | Height threshold |
+| ------ | ---------------- |
+| Small  | ≤ 8 cm           |
+| Medium | ≤ 17 cm          |
+| Large  | ≤ 36 cm          |
 
 If the package exceeds the large threshold or any hard limit, `nil` is returned and the BoxNow shipping option is hidden from checkout.
 
@@ -159,12 +160,12 @@ If a voucher creation attempt fails and the admin retries, the extension appends
 
 ## Routes
 
-| Method | Path | Action |
-|--------|------|--------|
-| `POST` | `/boxnow/select_locker` | Storefront: save locker selection |
-| `POST` | `/{admin_path}/boxnow/:order_id/create` | Admin: create voucher |
-| `GET` | `/{admin_path}/boxnow/:order_id/print` | Admin: print/download voucher PDF |
-| `POST` | `/{admin_path}/boxnow/:order_id/cancel` | Admin: cancel voucher |
+| Method | Path                                           | Action                                            |
+| ------ | ---------------------------------------------- | ------------------------------------------------- |
+| `POST` | `/boxnow/select_locker`                        | Storefront: save locker selection                 |
+| `POST` | `/{admin_path}/boxnow/:order_id/create`        | Admin: create voucher                             |
+| `GET`  | `/{admin_path}/boxnow/:order_id/print`         | Admin: print/download voucher PDF                 |
+| `POST` | `/{admin_path}/boxnow/:order_id/cancel`        | Admin: cancel voucher                             |
 | `POST` | `/{admin_path}/boxnow/:order_id/select_locker` | Admin: update locker selection (pre-voucher only) |
 
 ---

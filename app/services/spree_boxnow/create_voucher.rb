@@ -31,13 +31,13 @@ module SpreeBoxnow
         origin: {
           locationId:    integration.preferred_origin_location_id,
           contactName:   integration.preferred_contact_name.presence || '',
-          contactNumber: integration.preferred_contact_phone.presence || '',
+          contactNumber: PhoneNormalizer.call(integration.preferred_contact_phone),
           contactEmail:  integration.preferred_contact_email.presence || ''
         },
         destination: {
           locationId:    destination_id,
           contactName:   address.full_name,
-          contactNumber: address.phone.to_s,
+          contactNumber: PhoneNormalizer.call(address.phone, address.country_iso),
           contactEmail:  order.email.to_s
         },
         items: [{

@@ -7,7 +7,7 @@ end
 
 gem 'rails-controller-testing'
 
-spree_opts = { github: 'spree/spree', branch: 'main' }
+spree_opts = { github: 'spree/spree', tag: 'v5.3.2' }
 gem 'spree', spree_opts
 gem 'spree_emails', spree_opts
 gem 'spree_admin', spree_opts
